@@ -28,7 +28,7 @@
 
 ```bash
 # 1. clone & install（一次性）
-git clone <repo-url> docs-mcp-local
+git clone https://github.com/base-kit/docs-mcp.git docs-mcp-local
 cd docs-mcp-local
 npm install
 
@@ -279,7 +279,7 @@ npx docs-mcp verify --output /tmp/reports      # 输出到自定义目录
 | **redis hybrid 内存** | 运行期约 1.5 GB |
 | **Claude Code 启动** | 所有 stdio server 同时 spawn 约需 8-12 秒（与服务数成正比） |
 | **平台** | macOS / Linux 验证；Windows 需 Git Bash 或 WSL |
-| **文档陈旧检测** | `data/<svc>/manifest.json` 含 `gitCommit` 但本仓库不自动 rebuild。订阅 release：每月 `cd packages/<svc> && git pull && cd ../.. && npx docs-mcp build <svc>` |
+| **文档陈旧检测** | `data/<svc>/manifest.json` 含 `gitCommit` 但本仓库不自动 rebuild。订阅 release：每月 `npx docs-mcp update <svc>`（git pull + 重建索引） |
 | **`.mcp.json` 不进 git** | 含绝对路径，已 gitignored；clone 后需 `npx docs-mcp config` 重新生成 |
 
 ---
