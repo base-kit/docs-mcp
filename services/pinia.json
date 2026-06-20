@@ -1,0 +1,13 @@
+{
+  "name": "pinia-docs",
+  "docsName": "Pinia",
+  "sources": [
+    {
+      "root": "packages/pinia/packages/docs",
+      "exclude": [
+        "zh/**",
+        "public/**"
+      ]
+    }
+  ]
+}

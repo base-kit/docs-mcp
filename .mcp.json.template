@@ -1,0 +1,4 @@
+{
+  "command": "node",
+  "args": ["${DOCS_MCP_ROOT}/dist/core/server.js", "__SERVICE__"]
+}

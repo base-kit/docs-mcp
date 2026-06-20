@@ -1,0 +1,29 @@
+{
+  "name": "nginx",
+  "repo": "git@github.com:nginx/documentation.git",
+  "serverName": "nginx-docs",
+  "docsName": "NGINX",
+  "docsRoot": "content",
+  "exclude": [
+    "includes/**",
+    "nim/**",
+    "nic/**",
+    "ngf/**",
+    "nginx-one-console/**",
+    "nginxaas/**",
+    "nginxaas-azure/**",
+    "nginxaas-google/**",
+    "amplify/**",
+    "waf/**",
+    "nap-dos/**",
+    "agent/**",
+    "solutions/**",
+    "nginx/directives.md",
+    "nginx/variables.md"
+  ],
+  "description": "NGINX 高性能 Web 服务器",
+  "meta": {
+    "projectVersion": "nginx",
+    "addedAt": "2026-06-20T08:52:27.997Z"
+  }
+}

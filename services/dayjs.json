@@ -1,0 +1,9 @@
+{
+  "name": "dayjs-docs",
+  "docsName": "Day.js",
+  "sources": [
+    {
+      "root": "packages/dayjs/docs"
+    }
+  ]
+}

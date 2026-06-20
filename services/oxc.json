@@ -1,0 +1,9 @@
+{
+  "name": "oxc-docs",
+  "docsName": "OXC",
+  "sources": [
+    {
+      "root": "packages/oxc-website/src/docs"
+    }
+  ]
+}

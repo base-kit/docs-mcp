@@ -1,0 +1,13 @@
+{
+  "name": "drizzle",
+  "repo": "git@github.com:drizzle-team/drizzle-orm-docs.git",
+  "serverName": "drizzle-docs",
+  "docsName": "Drizzle ORM",
+  "docsRoot": "src/content/docs",
+  "mode": "hybrid",
+  "description": "Drizzle ORM TypeScript Headless ORM",
+  "meta": {
+    "projectVersion": "drizzle-orm",
+    "addedAt": "2026-06-20T08:52:28.008Z"
+  }
+}

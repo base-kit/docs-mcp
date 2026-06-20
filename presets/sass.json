@@ -1,0 +1,24 @@
+{
+  "name": "sass",
+  "repo": "git@github.com:sass/sass-site.git",
+  "serverName": "sass-docs",
+  "docsName": "Sass",
+  "docsRoot": "source",
+  "exclude": [
+    "blog/**",
+    "_data/**",
+    "_includes/**",
+    "_layouts/**",
+    "assets/**",
+    "styleguide/**",
+    "helpers/**",
+    "@types/**",
+    "404.md"
+  ],
+  "description": "Sass CSS 预处理器（最新）",
+  "meta": {
+    "projectVersion": "sass@^1.80",
+    "addedAt": "2026-06-20T08:52:27.990Z"
+  },
+  "package": "sass-site"
+}

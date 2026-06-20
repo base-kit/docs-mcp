@@ -1,0 +1,16 @@
+{
+  "name": "bun",
+  "repo": "git@github.com:oven-sh/bun.git",
+  "serverName": "bun-docs",
+  "docsName": "Bun",
+  "docsRoot": "docs",
+  "exclude": [
+    "snippets/**"
+  ],
+  "mode": "hybrid",
+  "description": "Bun 全栈 JS 运行时（Zig）",
+  "meta": {
+    "projectVersion": "bun",
+    "addedAt": "2026-06-20T08:52:28.015Z"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "unocss",
+  "repo": "git@github.com:unocss/unocss.git",
+  "serverName": "unocss-docs",
+  "docsName": "UnoCSS",
+  "docsRoot": "docs",
+  "description": "即时按需原子化 CSS 引擎 v66",
+  "meta": {
+    "projectVersion": "unocss@^66",
+    "addedAt": "2026-06-20T08:52:27.977Z"
+  }
+}

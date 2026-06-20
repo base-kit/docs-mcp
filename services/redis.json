@@ -1,0 +1,14 @@
+{
+  "name": "redis-docs",
+  "docsName": "Redis",
+  "mode": "hybrid",
+  "sources": [
+    {
+      "root": "packages/redis/content",
+      "exclude": [
+        "operate/**",
+        "embeds/**"
+      ]
+    }
+  ]
+}

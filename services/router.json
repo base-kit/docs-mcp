@@ -1,0 +1,13 @@
+{
+  "name": "router-docs",
+  "docsName": "Vue Router",
+  "sources": [
+    {
+      "root": "packages/router/packages/docs",
+      "exclude": [
+        "zh/**",
+        "public/**"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "vue-i18n-docs",
+  "docsName": "Vue I18n",
+  "sources": [
+    {
+      "root": "packages/vue-i18n/docs",
+      "exclude": [
+        "jp/**",
+        "zh/**",
+        "public/**"
+      ]
+    }
+  ]
+}

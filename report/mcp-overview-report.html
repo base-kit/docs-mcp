@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>docs-mcp 验证总览</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.6;padding:2rem}
+  .container{max-width:1100px;margin:0 auto}
+  h1{font-size:2rem;background:linear-gradient(135deg,#646CFF,#BD34FE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border-bottom:2px solid #646CFF;padding-bottom:.5rem;margin-bottom:1.5rem}
+  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+  .stat-card{background:#1a1a2e;border-radius:8px;padding:1.2rem;text-align:center}
+  .stat-card .value{font-size:2rem;font-weight:700;background:linear-gradient(135deg,#646CFF,#BD34FE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .stat-card .label{font-size:.85rem;color:#888;margin-top:.3rem}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.7rem 1rem;text-align:left;border-bottom:1px solid #2a2a2a}
+  th{background:#1a1a2e;color:#aaa;font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px}
+  tr:hover td{background:#111}
+  code{background:#1a1a2e;padding:1px 6px;border-radius:3px;font-size:.85em;color:#BD34FE}
+  .badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.8rem;font-weight:600}
+  .badge-pass{background:#0d3320;color:#42b883}
+  .badge-fail{background:#3d0d0d;color:#ff4242}
+  .footer{text-align:center;color:#555;font-size:.8rem;margin-top:3rem;padding-top:1rem;border-top:1px solid #1a1a1a}
+</style></head><body><div class="container">
+<h1>📊 docs-mcp 验证总览</h1>
+<div class="summary-grid">
+  <div class="stat-card"><div class="value">22</div><div class="label">已验证服务</div></div>
+  <div class="stat-card"><div class="value">22/22</div><div class="label">全通过</div></div>
+  <div class="stat-card"><div class="value">132/132</div><div class="label">总测试</div></div>
+  <div class="stat-card"><div class="value">5144</div><div class="label">总页面</div></div>
+</div>
+<table>
+  <thead><tr><th>服务</th><th>文档名</th><th>模式</th><th>通过</th><th>页数</th><th>索引</th><th>结果</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>axios</code></td>
+      <td>Axios</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>33</td>
+      <td>1093 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>dayjs</code></td>
+      <td>Day.js</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>154</td>
+      <td>706 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>drizzle</code></td>
+      <td>Drizzle ORM</td>
+      <td>hybrid</td>
+      <td>6/6</td>
+      <td>250</td>
+      <td>14659 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>bun</code></td>
+      <td>Bun</td>
+      <td>hybrid</td>
+      <td>6/6</td>
+      <td>318</td>
+      <td>25725 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>element-plus</code></td>
+      <td>Element Plus</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>102</td>
+      <td>4474 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>elysia</code></td>
+      <td>Elysia</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>87</td>
+      <td>3235 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>nginx</code></td>
+      <td>NGINX</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>137</td>
+      <td>8901 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>pinia</code></td>
+      <td>Pinia</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>22</td>
+      <td>810 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>node</code></td>
+      <td>Node.js</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>70</td>
+      <td>16090 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>oxc</code></td>
+      <td>OXC</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>925</td>
+      <td>16484 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>pnpm</code></td>
+      <td>pnpm</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>126</td>
+      <td>2256 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>rolldown</code></td>
+      <td>Rolldown</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>49</td>
+      <td>1563 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>router</code></td>
+      <td>Vue Router</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>49</td>
+      <td>1640 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>sass</code></td>
+      <td>Sass</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>92</td>
+      <td>2875 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>tsdown</code></td>
+      <td>tsdown</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>41</td>
+      <td>1080 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>unocss</code></td>
+      <td>UnoCSS</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>59</td>
+      <td>1452 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>vant</code></td>
+      <td>Vant</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>108</td>
+      <td>3047 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>vite</code></td>
+      <td>Vite</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>44</td>
+      <td>2726 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>vitest</code></td>
+      <td>Vitest</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>217</td>
+      <td>7825 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>vue-i18n</code></td>
+      <td>Vue I18n</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>61</td>
+      <td>2308 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>vue</code></td>
+      <td>Vue.js</td>
+      <td>fulltext</td>
+      <td>6/6</td>
+      <td>119</td>
+      <td>5920 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    <tr>
+      <td><code>redis</code></td>
+      <td>Redis</td>
+      <td>hybrid</td>
+      <td>6/6</td>
+      <td>2081</td>
+      <td>294440 KB</td>
+      <td><span class="badge badge-pass">PASS</span></td>
+    </tr></tbody>
+</table>
+<div class="footer">由 docs-mcp verify 生成 · 2026-06-20T13:59:46.289Z</div>
+</div></body></html>

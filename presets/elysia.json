@@ -1,0 +1,19 @@
+{
+  "name": "elysia",
+  "repo": "git@github.com:elysiajs/documentation.git",
+  "serverName": "elysia-docs",
+  "docsName": "Elysia",
+  "docsRoot": "docs",
+  "exclude": [
+    "blog/**",
+    "playground/**",
+    "blog.md",
+    "illust.md",
+    "table-of-content.md"
+  ],
+  "description": "Elysia Bun 优先 TS 后端框架",
+  "meta": {
+    "projectVersion": "elysia@^1",
+    "addedAt": "2026-06-20T08:52:27.993Z"
+  }
+}

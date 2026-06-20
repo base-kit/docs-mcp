@@ -1,0 +1,15 @@
+{
+  "name": "rolldown",
+  "repo": "git@github.com:rolldown/rolldown.git",
+  "serverName": "rolldown-docs",
+  "docsName": "Rolldown",
+  "docsRoot": "docs",
+  "exclude": [
+    ".vitepress/**"
+  ],
+  "description": "Rolldown Rust 打包器（Vite 8 内核）",
+  "meta": {
+    "projectVersion": "rolldown",
+    "addedAt": "2026-06-20T08:52:28.000Z"
+  }
+}

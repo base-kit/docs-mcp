@@ -1,0 +1,15 @@
+{
+  "name": "vant",
+  "repo": "git@github.com:youzan/vant.git",
+  "serverName": "vant-docs",
+  "docsName": "Vant",
+  "docsRoot": "packages/vant/docs/markdown",
+  "exclude": [
+    "**/*.zh-CN.md"
+  ],
+  "description": "有赞移动端 Vue 组件库",
+  "meta": {
+    "projectVersion": "vant",
+    "addedAt": "2026-06-20T08:52:27.979Z"
+  }
+}

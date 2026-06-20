@@ -1,0 +1,12 @@
+{
+  "name": "axios",
+  "repo": "git@github.com:axios/axios.git",
+  "serverName": "axios-docs",
+  "docsName": "Axios",
+  "docsRoot": "docs/pages",
+  "description": "Axios v1 HTTP 客户端",
+  "meta": {
+    "projectVersion": "axios@^1",
+    "addedAt": "2026-06-20T08:52:27.985Z"
+  }
+}

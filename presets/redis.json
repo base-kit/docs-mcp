@@ -1,0 +1,17 @@
+{
+  "name": "redis",
+  "repo": "git@github.com:redis/docs.git",
+  "serverName": "redis-docs",
+  "docsName": "Redis",
+  "docsRoot": "content",
+  "exclude": [
+    "operate/**",
+    "embeds/**"
+  ],
+  "mode": "hybrid",
+  "description": "Redis 8 内存数据库",
+  "meta": {
+    "projectVersion": "redis@8",
+    "addedAt": "2026-06-20T08:52:27.996Z"
+  }
+}

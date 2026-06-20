@@ -1,0 +1,13 @@
+{
+  "name": "tsdown-docs",
+  "docsName": "tsdown",
+  "sources": [
+    {
+      "root": "packages/tsdown/docs",
+      "exclude": [
+        ".vitepress/**",
+        "zh-CN/**"
+      ]
+    }
+  ]
+}

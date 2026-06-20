@@ -1,0 +1,27 @@
+# ===== 依赖（npm install 产物）=====
+/node_modules/
+
+# ===== 数据源 packages/（git clone 时填充） + 索引 data/ + 构建产物 dist/ =====
+/packages/
+/data/
+/dist/
+
+# ===== 用户本地的 .mcp.json（消费方产物，含绝对路径，docs-mcp config 可重建）=====
+/.mcp.json
+
+# ===== CLI 本地缓存（如已下载的 embedding 模型副本）=====
+.cache/
+.temp/
+
+# ===== 临时/系统文件 =====
+.DS_Store
+Thumbs.db
+*.log
+*.local
+tmp/
+
+# ===== IDE / 编辑器 =====
+.idea/
+.vscode/
+*.swp
+*.swo

@@ -1,0 +1,20 @@
+{
+  "name": "sass-docs",
+  "docsName": "Sass",
+  "sources": [
+    {
+      "root": "packages/sass-site/source",
+      "exclude": [
+        "blog/**",
+        "_data/**",
+        "_includes/**",
+        "_layouts/**",
+        "assets/**",
+        "styleguide/**",
+        "helpers/**",
+        "@types/**",
+        "404.md"
+      ]
+    }
+  ]
+}

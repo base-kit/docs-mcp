@@ -1,0 +1,12 @@
+{
+  "name": "node",
+  "repo": "git@github.com:nodejs/node.git",
+  "serverName": "node-docs",
+  "docsName": "Node.js",
+  "docsRoot": "doc/api",
+  "description": "Node.js v24 运行时文档",
+  "meta": {
+    "projectVersion": "node@24",
+    "addedAt": "2026-06-20T08:52:27.988Z"
+  }
+}

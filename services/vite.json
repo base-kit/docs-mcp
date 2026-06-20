@@ -1,0 +1,13 @@
+{
+  "name": "vite-docs",
+  "docsName": "Vite",
+  "sources": [
+    {
+      "root": "packages/vite/docs",
+      "exclude": [
+        "blog/**",
+        "blog.md"
+      ]
+    }
+  ]
+}

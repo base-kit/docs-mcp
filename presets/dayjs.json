@@ -1,0 +1,12 @@
+{
+  "name": "dayjs",
+  "repo": "git@github.com:dayjs/dayjs-website.git",
+  "serverName": "dayjs-docs",
+  "docsName": "Day.js",
+  "docsRoot": "docs",
+  "description": "Day.js 轻量日期库 v1.11",
+  "meta": {
+    "projectVersion": "dayjs@^1",
+    "addedAt": "2026-06-20T08:52:27.986Z"
+  }
+}

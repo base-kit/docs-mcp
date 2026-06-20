@@ -1,0 +1,16 @@
+{
+  "name": "router",
+  "repo": "git@github.com:vuejs/router.git",
+  "serverName": "router-docs",
+  "docsName": "Vue Router",
+  "docsRoot": "packages/docs",
+  "exclude": [
+    "zh/**",
+    "public/**"
+  ],
+  "description": "Vue 官方路由 v5",
+  "meta": {
+    "projectVersion": "vue-router@^5",
+    "addedAt": "2026-06-20T08:52:27.976Z"
+  }
+}

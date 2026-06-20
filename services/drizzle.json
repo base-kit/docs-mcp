@@ -1,0 +1,10 @@
+{
+  "name": "drizzle-docs",
+  "docsName": "Drizzle ORM",
+  "mode": "hybrid",
+  "sources": [
+    {
+      "root": "packages/drizzle/src/content/docs"
+    }
+  ]
+}

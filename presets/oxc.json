@@ -1,0 +1,13 @@
+{
+  "name": "oxc",
+  "repo": "https://github.com/oxc-project/website.git",
+  "serverName": "oxc-docs",
+  "docsName": "OXC",
+  "docsRoot": "src/docs",
+  "description": "Oxidation Compiler 项目文档",
+  "meta": {
+    "projectVersion": "oxlint@^1, oxfmt@^0.55",
+    "addedAt": "2026-06-20T08:52:27.983Z"
+  },
+  "package": "oxc-website"
+}

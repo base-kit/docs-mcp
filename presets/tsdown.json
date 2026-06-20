@@ -1,0 +1,16 @@
+{
+  "name": "tsdown",
+  "repo": "git@github.com:rolldown/tsdown.git",
+  "serverName": "tsdown-docs",
+  "docsName": "tsdown",
+  "docsRoot": "docs",
+  "exclude": [
+    ".vitepress/**",
+    "zh-CN/**"
+  ],
+  "description": "tsdown 基于 Rolldown 的 TS 库打包器",
+  "meta": {
+    "projectVersion": "tsdown",
+    "addedAt": "2026-06-20T08:52:28.003Z"
+  }
+}

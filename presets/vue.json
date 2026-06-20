@@ -1,0 +1,13 @@
+{
+  "name": "vue",
+  "repo": "git@github.com:vuejs/docs.git",
+  "serverName": "vue-docs",
+  "docsName": "Vue.js",
+  "docsRoot": "src",
+  "description": "Vue 3.5+ 渐进式 JavaScript 框架",
+  "meta": {
+    "projectVersion": "vue@^3.5",
+    "addedAt": "2026-06-20T08:52:27.972Z"
+  },
+  "package": "vue-docs"
+}

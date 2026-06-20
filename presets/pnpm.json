@@ -1,0 +1,13 @@
+{
+  "name": "pnpm",
+  "repo": "git@github.com:pnpm/pnpm.io.git",
+  "serverName": "pnpm-docs",
+  "docsName": "pnpm",
+  "docsRoot": "docs",
+  "description": "pnpm v10 包管理器",
+  "meta": {
+    "projectVersion": "pnpm@^10",
+    "addedAt": "2026-06-20T08:52:27.989Z"
+  },
+  "package": "pnpm.io"
+}

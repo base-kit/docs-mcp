@@ -1,0 +1,16 @@
+{
+  "name": "vite",
+  "repo": "git@github.com:vitejs/vite.git",
+  "serverName": "vite-docs",
+  "docsName": "Vite",
+  "docsRoot": "docs",
+  "exclude": [
+    "blog/**",
+    "blog.md"
+  ],
+  "description": "Vite 8 下一代前端构建工具",
+  "meta": {
+    "projectVersion": "vite@^8",
+    "addedAt": "2026-06-20T08:52:27.974Z"
+  }
+}

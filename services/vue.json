@@ -1,0 +1,9 @@
+{
+  "name": "vue-docs",
+  "docsName": "Vue.js",
+  "sources": [
+    {
+      "root": "packages/vue-docs/src"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "pinia",
+  "repo": "git@github.com:vuejs/pinia.git",
+  "serverName": "pinia-docs",
+  "docsName": "Pinia",
+  "docsRoot": "packages/docs",
+  "exclude": [
+    "zh/**",
+    "public/**"
+  ],
+  "description": "Vue 官方状态管理 v3",
+  "meta": {
+    "projectVersion": "pinia@^3",
+    "addedAt": "2026-06-20T08:52:27.976Z"
+  }
+}

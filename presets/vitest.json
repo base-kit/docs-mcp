@@ -1,0 +1,15 @@
+{
+  "name": "vitest",
+  "repo": "git@github.com:vitest-dev/vitest.git",
+  "serverName": "vitest-docs",
+  "docsName": "Vitest",
+  "docsRoot": "docs",
+  "exclude": [
+    "public/**"
+  ],
+  "description": "Vitest 4 测试框架（Vite 8 兼容）",
+  "meta": {
+    "projectVersion": "vitest@^4",
+    "addedAt": "2026-06-20T08:52:27.981Z"
+  }
+}

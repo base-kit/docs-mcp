@@ -1,0 +1,9 @@
+{
+  "name": "unocss-docs",
+  "docsName": "UnoCSS",
+  "sources": [
+    {
+      "root": "packages/unocss/docs"
+    }
+  ]
+}

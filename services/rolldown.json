@@ -1,0 +1,12 @@
+{
+  "name": "rolldown-docs",
+  "docsName": "Rolldown",
+  "sources": [
+    {
+      "root": "packages/rolldown/docs",
+      "exclude": [
+        ".vitepress/**"
+      ]
+    }
+  ]
+}

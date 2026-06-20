@@ -1,0 +1,12 @@
+{
+  "name": "vitest-docs",
+  "docsName": "Vitest",
+  "sources": [
+    {
+      "root": "packages/vitest/docs",
+      "exclude": [
+        "public/**"
+      ]
+    }
+  ]
+}

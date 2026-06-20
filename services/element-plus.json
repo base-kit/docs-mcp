@@ -1,0 +1,13 @@
+{
+  "name": "element-plus-docs",
+  "docsName": "Element Plus",
+  "sources": [
+    {
+      "root": "packages/element-plus/docs/en-US",
+      "exclude": [
+        ".vitepress/**",
+        "examples/**"
+      ]
+    }
+  ]
+}

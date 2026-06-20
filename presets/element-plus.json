@@ -1,0 +1,16 @@
+{
+  "name": "element-plus",
+  "repo": "git@github.com:element-plus/element-plus.git",
+  "serverName": "element-plus-docs",
+  "docsName": "Element Plus",
+  "docsRoot": "docs/en-US",
+  "exclude": [
+    ".vitepress/**",
+    "examples/**"
+  ],
+  "description": "Element Plus Vue 3 组件库",
+  "meta": {
+    "projectVersion": "element-plus",
+    "addedAt": "2026-06-20T08:52:27.977Z"
+  }
+}
