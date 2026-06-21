@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "description": "为 AI 编程（Claude Code / Cursor 等）提供开源项目的本地、可检索、可验证的官方文档 MCP 服务",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/base-kit/docs-mcp.git"
+  },
+  "homepage": "https://github.com/base-kit/docs-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/base-kit/docs-mcp/issues"
+  },
   "bin": {
     "docs-mcp": "./bin/docs-mcp.mjs"
   },
