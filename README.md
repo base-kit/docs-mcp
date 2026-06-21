@@ -186,14 +186,14 @@ Claude Code 读 .mcp.json → spawn `docs-mcp serve <svc>`（或 `node <root>/di
 | `list_{prefix}_doc_sections` | `category?` | 不熟悉文档结构时先浏览 |
 | `grep_{prefix}_docs` | `pattern`（正则） | 找 API 名在哪些页出现 |
 
-`{prefix}` 替换为预制服务名（如 `vite`）。完整服务清单见下表；运行 `npx docs-mcp preset list` 始终拿到最新。
+`{prefix}` 替换为预制服务名（如 `vite`）。完整服务清单见下表；运行 `docs-mcp preset list` 始终拿到最新。
 
 ---
 
 ## 当前预制服务清单
 
-> 这只是**起点**。你可以 `npx docs-mcp add <url>` 把任意开源项目的文档拉进来变成自己的预制，
-> 或 `npx docs-mcp remove <svc>` 删掉不需要的。
+> 这只是**起点**。你可以 `docs-mcp add <url>` 把任意开源项目的文档拉进来变成自己的预制，
+> 或 `docs-mcp remove <svc>` 删掉不需要的。
 
 | 服务名 | 文档名 | 模式 | 项目版本 | 描述 |
 |---|---|---|---|---|
@@ -230,60 +230,80 @@ Claude Code 读 .mcp.json → spawn `docs-mcp serve <svc>`（或 `node <root>/di
 ### 安装 / 升级文档
 
 ```bash
-# 全部预制 + 立即构建索引
-npx docs-mcp install --build
+# 全部预制 + 立即构建索引（首次推荐）
+docs-mcp install --build
 
 # 只安装指定服务
-npx docs-mcp install vue vite pinia --build
+docs-mcp install vue vite pinia --build
 
 # 强制重新克隆（packages/ 内已存在也覆盖）
-npx docs-mcp install --force --build
+docs-mcp install --force --build
+
+# 调整 git clone 深度（默认 --depth 1 浅克隆，省磁盘）
+docs-mcp install redis --depth 5 --build
+
+# 跳过内核依赖检查（已确认环境完备时加速）
+docs-mcp install --no-deps --build
 
 # 已安装的服务，想升级文档？
-npx docs-mcp update vue          # git pull + 重建索引
-npx docs-mcp update --all        # 全部已安装服务
-npx docs-mcp update vue --verify # 更新后顺带验证
-npx docs-mcp update vue --force  # 浅克隆 pull 失败时，强制重新克隆
+docs-mcp update vue          # git pull + 重建索引（默认）
+docs-mcp update --all        # 全部已安装服务
+docs-mcp update vue --verify # 更新后顺带验证
+docs-mcp update vue --force  # 浅克隆 pull 失败时，强制重新克隆
 ```
 
-### 添加新的开源项目（非预制）
+### 添加 / 移除服务
 
 ```bash
-# 全交互模式（推荐新手）
-npx docs-mcp add https://github.com/withastro/docs --interactive
+# 全交互模式（推荐新手，逐项填写元数据）
+docs-mcp add https://github.com/withastro/docs --interactive
 
 # 命令行模式（适合 CI/脚本）
-npx docs-mcp add https://github.com/foo/bar.git \
+docs-mcp add https://github.com/foo/bar.git \
   --name astro \
   --docs-root src/content/docs \
   --exclude "blog/**,i18n/**" \
   --mode hybrid \
-  --docs-name "Astro Docs"
+  --docs-name "Astro Docs" \
+  --server-name astro-docs      # .mcp.json 注册名（默认 <name>-docs）
 
-# 下一步：构建索引 + 生成 .mcp.json
-npx docs-mcp build astro
-npx docs-mcp config --services astro,vite
+# 添加后构建索引 + 生成 .mcp.json
+docs-mcp build astro
+docs-mcp config --services astro,vite
+
+# 移除服务（默认删 packages/ + services/ + data/ + preset 四件套）
+docs-mcp remove foo
+
+# 移除但保留部分（调试 / 节省重下时间）
+docs-mcp remove foo --keep-data     # 保留索引（下次 build 跳过）
+docs-mcp remove foo --keep-source   # 保留 packages/ 源码
 ```
 
-`add` 会同时写 `presets/<name>.json` + `services/<name>.json` —— 让这个仓库也成为预制，可分享给其他人。
+`add` 会同时写 `presets/<name>.json`（用户区，可分享）+ `services/<name>.json`（索引配置）。内置 preset 只读，用户 `add` 的落在 `~/.docs-mcp/presets/`，同名可覆盖内置。
 
-### 生成 .mcp.json
+### 生成 .mcp.json（接入 Claude Code）
 
 ```bash
-# 交互模式（推荐）
-npx docs-mcp config
+# 交互模式（推荐，空格勾选、回车确认）
+docs-mcp config
 
-# 命令行
-npx docs-mcp config --services vue,vite,pinia -o .mcp.json
+# 指定服务 + 输出路径
+docs-mcp config --services vue,vite,pinia -o .mcp.json
 
 # 全选已构建服务
-npx docs-mcp config --all
+docs-mcp config --all
 
-# 显式指定 docs-mcp-local 根路径（用于非默认 clone 位置）
-npx docs-mcp config --root /Users/me/work/docs-mcp-local
+# 输出到目标项目（不在本仓库执行）
+docs-mcp config --all -o /path/to/your-project/.mcp.json
+
+# 生成绝对路径块（clone 源码且未 npm link 时用；否则默认 docs-mcp serve 可移植块）
+docs-mcp config --all --absolute -o .mcp.json
 
 # 一并输出消费方规范（CLAUDE.md + 选中服务 mcp-refs 速查）到目标项目
-npx docs-mcp config --all --with-claude-md -o /path/to/your-project/.mcp.json
+docs-mcp config --all --with-claude-md -o /path/to/your-project/.mcp.json
+
+# 组合：指定服务 + 消费方规范 + 绝对路径
+docs-mcp config --services vue,vite --with-claude-md --absolute -o .mcp.json
 ```
 
 生成的 `.mcp.json` 形如（默认可移植块）：
@@ -300,26 +320,54 @@ npx docs-mcp config --all --with-claude-md -o /path/to/your-project/.mcp.json
 }
 ```
 
-**可移植性**：默认 `docs-mcp serve <svc>`（无绝对路径、可进 git、跨机器通用），需 `docs-mcp` 在 PATH（全局安装或 `npm link`）。
-clone 源码且未 link 时用 `--absolute` 生成 `node <安装根>/dist/core/server.js <svc>` 绝对路径块。
+**可移植性**：默认 `docs-mcp serve <svc>`（无绝对路径、可进 git、跨机器通用），需 `docs-mcp` 在 PATH（全局安装或 `npm link`）。`--absolute` 则生成 `node <安装根>/dist/core/server.js <svc>` 绝对路径块——适合 clone 源码且未 link 的场景，但含机器特定路径、跨机器需重新生成。
 
 把这个文件**放到需要 AI 辅助的项目根目录**（或 `~/.claude/`），重启 Claude Code 即可。
 
-**`--with-claude-md`（消费方规范交付）**：docs-mcp 仓库自身的 `CLAUDE.md` 是**工具开发规范**；消费方项目（用这些 MCP 服务查文档写 Vue/Vite 代码）需要的规范在 `templates/consumer/`。加 `--with-claude-md` 后，`config` 会把消费方 `CLAUDE.md` + 选中服务的 `mcp-refs/*.md`（路径速查）一并输出到目标项目的根目录与 `.claude/mcp-refs/`，让消费方项目开箱即得「先查 MCP 文档再写代码」的强约束规范。若目标已有 `CLAUDE.md`，消费方规范输出为 `CLAUDE.docs-mcp.md`（不覆盖，可手动合并或 `@import`）。
+**`--with-claude-md`（消费方规范交付）**：
+
+docs-mcp 仓库自身的 `CLAUDE.md` 是**工具开发规范**；消费方项目（用这些 MCP 服务查文档写 Vue/Vite 代码）需要的规范在 `templates/consumer/`。加 `--with-claude-md` 后，`config` 会把消费方 `CLAUDE.md` + 选中服务的 `mcp-refs/*.md`（路径速查表）一并输出到目标项目，开箱即得「先查 MCP 文档再写代码」的强约束规范。若目标已有 `CLAUDE.md`，消费方规范输出为 `CLAUDE.docs-mcp.md`（不覆盖，可手动合并或 `@import`）。
+
+```
+your-project/
+├── .mcp.json                  ← docs-mcp config 生成
+├── CLAUDE.md                  ← 消费方规范（已有则输出为 CLAUDE.docs-mcp.md）
+└── .claude/mcp-refs/
+    ├── vue.md                 ← 各服务文档路径速查
+    └── vite.md
+```
 
 ---
 
-## 验证报告
+## 查看、验证与运行
 
 ```bash
-npx docs-mcp verify                            # 全部已构建服务
-npx docs-mcp verify vite vue pinia             # 指定服务
-npx docs-mcp verify --output /tmp/reports      # 输出到自定义目录
+# 列出服务（默认全部预制 + 安装/构建状态）
+docs-mcp list
+docs-mcp list --installed      # 仅已安装到 packages/ 的
+docs-mcp list --built          # 仅已构建索引的
+docs-mcp list --available      # 仅预制但未安装的
+docs-mcp list --json           # JSON 输出（便于脚本解析）
+
+# 浏览预制元数据
+docs-mcp preset list           # 所有预制
+docs-mcp preset show vue       # 某预制的完整配置
+
+# 构建 / 重建索引
+docs-mcp build vue              # 单服务
+docs-mcp build --all           # 全部已安装服务
+docs-mcp build --core-only     # 仅重新编译 src/ → dist/（源码开发用）
+
+# 验证（端到端 MCP 协议测试 + HTML 报告）
+docs-mcp verify                # 全部已构建服务
+docs-mcp verify vite vue pinia # 指定服务
+docs-mcp verify -o /tmp/reports
+
+# 手动运行某服务（调试用，通常由 .mcp.json 自动 spawn）
+docs-mcp serve vue
 ```
 
-每服务跑 6 个 MCP 协议测试（initialize / tools/list / search / get / list / 错误处理），
-输出 `report/<svc>-docs-mcp-report.html` + `report/mcp-overview-report.html`。
-并发限制 4，单服务总耗时约 1-2 秒。
+`verify` 每服务跑 6 个 MCP 协议测试（initialize / tools/list / search / get / list / 错误处理），输出 `report/<svc>-docs-mcp-report.html` + `report/mcp-overview-report.html`，并发限制 4，单服务约 1-2 秒。
 
 ---
 
