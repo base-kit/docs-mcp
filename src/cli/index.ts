@@ -1,8 +1,10 @@
 /**
  * docs-mcp CLI 入口
- * 子命令：install / config / add / remove / build / list / preset
+ * 子命令：install / config / add / remove / build / list / preset / verify / update / serve
  */
 import { Command } from 'commander';
+import fs from 'node:fs';
+import path from 'node:path';
 import { installCommand } from './commands/install.js';
 import { configCommand } from './commands/config.js';
 import { addCommand } from './commands/add.js';
@@ -12,9 +14,13 @@ import { listCommand } from './commands/list.js';
 import { presetCommand } from './commands/preset.js';
 import { verifyCommand } from './commands/verify.js';
 import { updateCommand } from './commands/update.js';
+import { serveCommand } from './commands/serve.js';
 import { log } from './log.js';
 
-const VERSION = '1.0.0';
+/** 运行期版本：从包根 package.json 读取（dist/cli/ → ../../package.json） */
+const VERSION = JSON.parse(
+  fs.readFileSync(path.resolve(import.meta.dirname, '..', '..', 'package.json'), 'utf-8'),
+).version as string;
 
 const program = new Command();
 program
@@ -67,6 +73,7 @@ program
   .option('--root <path>', 'docs-mcp-local 根绝对路径')
   .option('--services <list>', '逗号分隔的服务列表')
   .option('--with-claude-md', '一并输出消费方 CLAUDE.md + 选中服务 mcp-refs 到目标项目 .claude/')
+  .option('--absolute', '生成绝对路径块（node <root>/dist/core/server.js），默认 docs-mcp serve 可移植块')
   .action(configCommand);
 
 program
@@ -98,6 +105,11 @@ program
   .option('--force', '强制重新克隆（而非 git pull）')
   .option('--verify', '更新后自动验证')
   .action(updateCommand);
+
+program
+  .command('serve <service>')
+  .description('运行 MCP stdio server（.mcp.json 注册入口，内部 spawn dist/core/server.js）')
+  .action(serveCommand);
 
 // 默认无子命令时显示 help
 program.action(() => {

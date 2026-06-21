@@ -5,8 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { log, table } from '../log.js';
 import { listPresetNames, getPreset } from '../../preset/loader.js';
-
-const ROOT = path.resolve(import.meta.dirname, '..', '..', '..');
+import { PACKAGES_DIR, DATA_DIR } from '../../core/paths.js';
 
 interface ListOpts {
   installed?: boolean;
@@ -17,8 +16,8 @@ interface ListOpts {
 
 export async function listCommand(opts: ListOpts): Promise<void> {
   const all = listPresetNames();
-  const packagesDir = path.join(ROOT, 'packages');
-  const dataDir = path.join(ROOT, 'data');
+  const packagesDir = PACKAGES_DIR;
+  const dataDir = DATA_DIR;
 
   const rows: Array<{ service: string; installed: boolean; built: boolean; mode: string; docs: string }> = all.map(
     (name) => {

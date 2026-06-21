@@ -1,9 +1,0 @@
-{
-  "name": "node-docs",
-  "docsName": "Node.js",
-  "sources": [
-    {
-      "root": "packages/node/doc/api"
-    }
-  ]
-}

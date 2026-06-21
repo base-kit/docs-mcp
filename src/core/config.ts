@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { ServiceConfig } from './types.js';
+import { SERVICES_DIR } from './paths.js';
 
-/** services 目录：项目根 services/<service>.json（dist/core/config.js → ../../services） */
+/** services 目录：DATA_ROOT/services/<service>.json */
 function serviceConfigPath(service: string): string {
-  return path.resolve(import.meta.dirname, '..', '..', 'services', `${service}.json`);
+  return path.join(SERVICES_DIR, `${service}.json`);
 }
 
 /** 加载某个服务的配置 JSON */
@@ -18,7 +19,7 @@ export function loadServiceConfig(service: string): ServiceConfig {
 
 /** 列出所有可用服务名（services/*.json 去扩展名） */
 export function listServices(): string[] {
-  const dir = path.resolve(import.meta.dirname, '..', '..', 'services');
+  const dir = SERVICES_DIR;
   if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)

@@ -6,11 +6,8 @@ import path from 'node:path';
 import prompts from 'prompts';
 import { log } from '../log.js';
 import { generateMcpConfig, detectRoot, exportConsumerFiles } from '../mcp-config.js';
-import { listPresetNames } from '../../preset/loader.js';
-import { getPreset } from '../../preset/loader.js';
-
-const ROOT = path.resolve(import.meta.dirname, '..', '..', '..');
-const DATA_DIR = path.join(ROOT, 'data');
+import { listPresetNames, getPreset } from '../../preset/loader.js';
+import { DATA_DIR } from '../../core/paths.js';
 
 interface ConfigOpts {
   all?: boolean;
@@ -18,6 +15,7 @@ interface ConfigOpts {
   root?: string;
   services?: string;
   withClaudeMd?: boolean;
+  absolute?: boolean;
 }
 
 export async function configCommand(opts: ConfigOpts): Promise<void> {
@@ -71,9 +69,11 @@ export async function configCommand(opts: ConfigOpts): Promise<void> {
     services: selected,
     rootPath,
     output: opts.output,
+    absolute: opts.absolute,
   });
   log.success(`已生成 ${out}`);
   log.info(`包含 ${selected.length} 个服务：${selected.join(', ')}`);
+  log.info(opts.absolute ? '模式：绝对路径（node <root>/dist/core/server.js）' : '模式：可移植命令（docs-mcp serve），需 docs-mcp 在 PATH（全局安装或 npm link）');
 
   // 可选：一并输出消费方 CLAUDE.md + 选中服务 mcp-refs 到目标项目
   if (opts.withClaudeMd) {

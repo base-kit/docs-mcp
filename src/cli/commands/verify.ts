@@ -12,11 +12,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { log } from '../log.js';
 import { getPreset } from '../../preset/loader.js';
+import { DATA_DIR, SERVER_JS } from '../../core/paths.js';
 
-const ROOT = path.resolve(process.cwd());
-const CORE_DIR = ROOT;
-const DATA_DIR = path.join(CORE_DIR, 'data');
-const DEFAULT_OUTPUT = path.join(ROOT, 'report');
+const DEFAULT_OUTPUT = path.join(process.cwd(), 'report');
 const CONCURRENCY = 4;
 
 interface VerifyOpts {
@@ -275,9 +273,9 @@ class McpClient {
   constructor(private svc: string) {}
 
   async start(): Promise<void> {
-    const serverPath = path.join(CORE_DIR, 'dist', 'core', 'server.js');
+    const serverPath = SERVER_JS;
     if (!fs.existsSync(serverPath)) {
-      throw new Error(`内核未编译：${serverPath}（先跑 docs-mcp build --core-only）`);
+      throw new Error(`内核未编译：${serverPath}（全局安装请重装 npm i -g @easy-base/docs-mcp；源码安装跑 npm run build）`);
     }
     this.child = spawn('node', [serverPath, this.svc], { stdio: ['pipe', 'pipe', 'pipe'] });
     this.child.stdout!.on('data', (chunk) => this.onData(chunk));

@@ -3,10 +3,8 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 import crypto from 'node:crypto';
 import { collectTreeFiles, collectReadmeFiles, resolveRoot } from './indexer.js';
+import { DATA_ROOT } from './paths.js';
 import type { ServiceConfig, Manifest } from './types.js';
-
-/** 内核根目录 = 项目根（dist/core/manifest.js → ../../），与 indexer 保持一致 */
-const CORE_ROOT = path.resolve(import.meta.dirname, '..', '..');
 
 /** 收集某服务的所有源文件绝对路径（复用 tree/readme 收集逻辑，不读内容） */
 export function collectSourceFiles(config: ServiceConfig): string[] {
@@ -30,7 +28,7 @@ export function collectSourceFiles(config: ServiceConfig): string[] {
 export function computeSignature(config: ServiceConfig): { signature: string; fileCount: number } {
   const files = collectSourceFiles(config);
   const items = files
-    .map((abs) => `${path.relative(CORE_ROOT, abs)}|${fs.statSync(abs).mtimeMs}`)
+    .map((abs) => `${path.relative(DATA_ROOT, abs)}|${fs.statSync(abs).mtimeMs}`)
     .sort();
   const signature = crypto.createHash('sha1').update(items.join('\n')).digest('hex').slice(0, 12);
   return { signature, fileCount: files.length };

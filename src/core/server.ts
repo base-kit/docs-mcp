@@ -9,6 +9,7 @@ import { searchDocs, getPage, listSections, grepDocs } from './tools.js';
 import { loadServiceConfig, toolPrefix, listServices } from './config.js';
 import { checkFreshness } from './manifest.js';
 import { EMBED_DIM } from './embed.js';
+import { DATA_DIR } from './paths.js';
 
 /** 运行期版本：从项目根 package.json 读取（dist/core/ → ../../package.json） */
 const PKG_VERSION = JSON.parse(
@@ -42,7 +43,7 @@ async function loadIndex(
   service: string,
   config: ServiceConfig,
 ): Promise<{ db: any; pages: DocPage[] }> {
-  const dir = path.resolve(import.meta.dirname, '..', '..', 'data', service);
+  const dir = path.join(DATA_DIR, service);
   const indexPath = path.join(dir, 'index.json');
   const pagesPath = path.join(dir, 'pages.json');
 

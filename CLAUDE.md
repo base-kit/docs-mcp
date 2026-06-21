@@ -30,12 +30,14 @@ docs-mcp/                                 ← 单 npm 工程（工具源码）
 ├── data/                                ← 索引产物（gitignored，可重建）
 ├── packages/                            ← 拉取的源码（gitignored）
 ├── dist/                                ← 编译产物（gitignored，无 sourceMap）
-└── .mcp.json.template                   ← .mcp.json 模板（${DOCS_MCP_ROOT} 占位符）
+└── .mcp.json.template                   ← .mcp.json 模板（`docs-mcp serve __SERVICE__` 可移植块）
 ```
 
-**数据流**：`presets/<svc>.json` → `install` 克隆到 `packages/<pkg>/` + 写 `services/<svc>.json` → `build` 跑 `dist/core/build-index.js <svc>` → 索引落到 `data/<svc>/`。
+**双根**：`APP_ROOT`（代码/只读资源，跟随包安装位置）与 `DATA_ROOT`（用户数据，`~/.docs-mcp/`，可被 `DOCS_MCP_DATA` 覆盖）。`data/ packages/ services/` 在 `DATA_ROOT` 下；仓库内的同名目录仅开发期本地样本（gitignored）。升级包只动 `APP_ROOT`，不碰 `DATA_ROOT`。
 
-**运行期**：Claude Code 读 `.mcp.json` → spawn `node dist/core/server.js <svc>` → loadIndex() 探测 `index.vectorIndexes` 是否非空选 hybrid/fulltext → 注册 4 工具 → stdio JSON-RPC。
+**数据流**：`presets/<svc>.json` → `install` 克隆到 `DATA_ROOT/packages/<pkg>/` + 写 `DATA_ROOT/services/<svc>.json` → `build` 跑 `dist/core/build-index.js <svc>` → 索引落到 `DATA_ROOT/data/<svc>/`。
+
+**运行期**：Claude Code 读 `.mcp.json` → spawn `docs-mcp serve <svc>`（或 `node <APP_ROOT>/dist/core/server.js`）→ loadIndex() 探测 `index.vectorIndexes` 是否非空选 hybrid/fulltext → 注册 4 工具 → stdio JSON-RPC。
 
 ---
 
@@ -44,13 +46,13 @@ docs-mcp/                                 ← 单 npm 工程（工具源码）
 - **TypeScript ESM**（`"type": "module"`），Node ≥22
 - 内置模块一律用 `node:` 前缀（`node:fs`、`node:child_process`、`node:path`），避免与同名 npm 包冲突
 - 文件操作优先 `node:fs/promises`；CLI 内同步场景（构建/命令）用 `node:fs`
-- **路径基准（重构后易错点，务必核对）**：
-  - `src/core/*.ts`：`import.meta.dirname` 上溯 **2 级**到项目根（`dist/core/ → ../..`）
-  - `src/preset/*.ts`：上溯 **2 级**
-  - `src/cli/*.ts`：上溯 **2 级**
-  - `src/cli/commands/*.ts`：上溯 **3 级**（`dist/cli/commands/ → ../../../`）—— 历史上多次少写一级导致 `config`/`list`/`remove`/`add` 命令找不到 packages/data，新增命令务必确认
-- **service config 的 `sources[].root` 相对项目根**（如 `packages/vue-docs/src`），**不要**加 `../` 前缀（`docs-mcp-core` 单仓时期残留，已修；`add` 命令生成 config 时亦然）
-- 开发模式：`npm run dev`（tsx 直接跑 `.ts`，免编译）；生产：`npm run build`（tsc）后 `node bin/docs-mcp.mjs`
+- **双根路径（全局 npm 安装改造核心，所有路径依赖的唯一来源）**：
+  - 代码/只读资源根 `APP_ROOT`：跟随包安装位置（`dist/core/paths.js → ../..`），含 `dist/` `presets/`（内置）`templates/` `.mcp.json.template` `package.json`
+  - 用户数据根 `DATA_ROOT`：默认 `~/.docs-mcp/`，可被 `DOCS_MCP_DATA` 覆盖，含 `packages/` `data/` `services/` `presets/`（用户 add）`models/`
+  - **铁律**：找用户数据必须从 `src/core/paths.ts` 导入对应常量（`PACKAGES_DIR`/`DATA_DIR`/`SERVICES_DIR`/`USER_PRESETS_DIR` 等），**禁止**再写 `import.meta.dirname` 上溯或 `process.cwd()` 定位用户数据——历史多次踩坑（少写一级 / cwd 非项目根 / 全局目录不可写）。`APP_ROOT` 上溯 2 级的逻辑只在 `paths.ts` 集中一次。
+- **新增命令核对**：命令文件统一 `import { ... } from '../../core/paths.js'`（`src/cli/commands/ → ../../src/core`），不要重新发明路径基准
+- **service config 的 `sources[].root` 相对 `DATA_ROOT`**（如 `packages/vue-docs/src`），**不要**加 `../` 前缀
+- 开发模式：`npm run dev`（tsx 跑 `.ts`）；生产/全局：`npm run build` 后 `node bin/docs-mcp.mjs`（bin 跑预编译 `dist/cli/index.js`，无 tsx 运行期依赖）
 - 改 `src/` 后必须 `npm run build` 重新编译 `dist/`（`verify`/`config`/`update` 运行用 `dist/core/*`）
 - lint/format：`npm run lint` / `npm run format`（oxlint/oxfmt，仅查 `src/ bin/`）
 - 测试：`npx docs-mcp verify`（端到端 MCP 协议测试，每服务 6 项，并发 4）。本项目暂无单元测试（hybrid 索引加载耗时，端到端 verify 为主验证手段）
@@ -96,6 +98,7 @@ npx docs-mcp update vue --force  # 浅克隆 pull 失败时，强制重新克隆
 - `manifest.ts`：索引签名（sha1 of path+mtime）+ git commit 记录 + 运行期 freshness 检查
 - `config.ts`：services/*.json 加载 + `listServices` + `toolPrefix`
 - `build-index.ts`：构建入口（被 `docs-mcp build` 命令 spawn）
+- `paths.ts`：双根基准（`APP_ROOT`/`DATA_ROOT` 及派生目录常量）—— 全局安装改造核心，所有路径依赖的唯一来源
 - `types.ts`：DocChunk / DocPage / ServiceConfig / Manifest 类型
 
 **关键能力**：

@@ -4,26 +4,28 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { log } from './log.js';
-
-const TEMPLATE = path.join(process.cwd(), '.mcp.json.template');
+import { MCP_TEMPLATE, APP_ROOT } from '../core/paths.js';
 
 export interface GenerateConfigOptions {
   /** 选中的服务名列表 */
   services: string[];
-  /** docs-mcp-local 根绝对路径 */
+  /** docs-mcp 安装根绝对路径（absolute 模式用于定位 dist/core/server.js） */
   rootPath: string;
   /** 输出文件路径（默认 ./.mcp.json） */
   output?: string;
+  /** true: 生成 `node <root>/dist/core/server.js` 绝对路径块（clone 源码且未 npm link 时用）；
+   *  false（默认）: 生成 `docs-mcp serve` 可移植块（全局安装 / npm link 后用） */
+  absolute?: boolean;
 }
 
 /** 生成 .mcp.json，返回写入的绝对路径 */
 export function generateMcpConfig(opts: GenerateConfigOptions): string {
-  if (!fs.existsSync(TEMPLATE)) {
-    log.error(`模板文件不存在：${TEMPLATE}`);
-    log.info('请在 docs-mcp-local 根目录下执行，或显式指定 --root');
+  if (!fs.existsSync(MCP_TEMPLATE)) {
+    log.error(`模板文件不存在：${MCP_TEMPLATE}`);
+    log.info('docs-mcp 安装可能损坏，请重装：npm i -g @easy-base/docs-mcp');
     process.exit(1);
   }
-  const tplRaw = fs.readFileSync(TEMPLATE, 'utf-8');
+  const tplRaw = fs.readFileSync(MCP_TEMPLATE, 'utf-8');
   // 模板可能含注释行（// ...）和空行，剥离以保证 JSON 合法
   const tpl = tplRaw
     .split('\n')
@@ -46,11 +48,10 @@ export function generateMcpConfig(opts: GenerateConfigOptions): string {
   // 为每个服务复制一份 + 替换占位符
   const servers: Record<string, unknown> = {};
   for (const svc of opts.services) {
-    const block = JSON.parse(
-      JSON.stringify(parsedTpl)
-        .replace(/__SERVICE__/g, svc)
-        .replace(/\$\{DOCS_MCP_ROOT\}/g, opts.rootPath),
-    );
+    const block =
+      opts.absolute
+        ? { command: 'node', args: [path.join(opts.rootPath, 'dist', 'core', 'server.js'), svc] }
+        : JSON.parse(JSON.stringify(parsedTpl).replace(/__SERVICE__/g, svc));
     servers[`${svc}-docs`] = block;
   }
 
@@ -60,17 +61,10 @@ export function generateMcpConfig(opts: GenerateConfigOptions): string {
   return out;
 }
 
-/** 推断 docs-mcp-local 根：env > 当前 cwd（必须含 dist/core/server.js） */
+/** 推断 docs-mcp 安装根：env > APP_ROOT（server.js 在 APP_ROOT/dist/core/） */
 export function detectRoot(): string {
   if (process.env.DOCS_MCP_ROOT) return process.env.DOCS_MCP_ROOT;
-  const cwd = process.cwd();
-  if (fs.existsSync(path.join(cwd, 'dist', 'core', 'server.js'))) return cwd;
-  let cur = cwd;
-  for (let i = 0; i < 4; i++) {
-    cur = path.dirname(cur);
-    if (fs.existsSync(path.join(cur, 'dist', 'core', 'server.js'))) return cur;
-  }
-  return cwd;
+  return APP_ROOT;
 }
 
 /**

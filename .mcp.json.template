@@ -1,4 +1,4 @@
 {
-  "command": "node",
-  "args": ["${DOCS_MCP_ROOT}/dist/core/server.js", "__SERVICE__"]
+  "command": "docs-mcp",
+  "args": ["serve", "__SERVICE__"]
 }

@@ -16,9 +16,7 @@ import { log, table, die } from '../log.js';
 import { getPreset, listPresetNames } from '../../preset/loader.js';
 import { gitClone, gitPull, isGitRepo } from '../git.js';
 import { verifyCommand } from './verify.js';
-
-const ROOT = path.resolve(import.meta.dirname, '..', '..', '..');
-const BUILD_INDEX_JS = path.join(ROOT, 'dist', 'core', 'build-index.js');
+import { APP_ROOT, BUILD_INDEX_JS, PACKAGES_DIR } from '../../core/paths.js';
 
 interface UpdateOpts {
   all?: boolean;
@@ -40,7 +38,7 @@ export async function updateCommand(services: string[], opts: UpdateOpts): Promi
     targets = listPresetNames().filter((n) => {
       const p = getPreset(n);
       const pkg = p?.package ?? n;
-      return fs.existsSync(path.join(ROOT, 'packages', pkg, '.git'));
+      return fs.existsSync(path.join(PACKAGES_DIR, pkg, '.git'));
     });
   } else {
     log.error('请指定服务名，或用 --all 更新全部已安装服务');
@@ -68,7 +66,7 @@ export async function updateCommand(services: string[], opts: UpdateOpts): Promi
     }
 
     const pkg = preset.package ?? name;
-    const pkgDir = path.join(ROOT, 'packages', pkg);
+    const pkgDir = path.join(PACKAGES_DIR, pkg);
     log.step(i + 1, targets.length, `${preset.docsName} (packages/${pkg})`);
 
     // 2. 拉取最新源码
@@ -98,7 +96,7 @@ export async function updateCommand(services: string[], opts: UpdateOpts): Promi
 
     // 3. 重建索引
     try {
-      execSync(`node dist/core/build-index.js ${name}`, { cwd: ROOT, stdio: 'inherit' });
+      execSync(`node "${BUILD_INDEX_JS}" ${name}`, { cwd: APP_ROOT, stdio: 'inherit' });
     } catch {
       log.error('  索引构建失败');
       results.push([name, pkg, '✗ build failed']);

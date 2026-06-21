@@ -5,11 +5,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { log } from '../log.js';
+import { APP_ROOT, BUILD_INDEX_JS, SERVICES_DIR } from '../../core/paths.js';
 
-const ROOT = process.cwd();
-const SRC_DIR = path.join(ROOT, 'src');
-const DIST_DIR = path.join(ROOT, 'dist');
-const SERVICES_DIR = path.join(ROOT, 'services');
+const SRC_DIR = path.join(APP_ROOT, 'src');
+const DIST_DIR = path.join(APP_ROOT, 'dist');
 
 interface BuildOpts {
   all?: boolean;
@@ -17,14 +16,18 @@ interface BuildOpts {
 }
 
 export async function buildCommand(services: string[], opts: BuildOpts): Promise<void> {
-  // 1. 编译（如果 dist 不存在或源码变更）
+  // 1. 编译（仅源码安装有效：全局安装无 src/，直接用预编译 dist）
   const distServer = path.join(DIST_DIR, 'core', 'server.js');
-  if (!fs.existsSync(distServer) || sourceNewerThanDist()) {
+  if (fs.existsSync(SRC_DIR) && (!fs.existsSync(distServer) || sourceNewerThanDist())) {
     log.section('build · tsc');
     log.info('编译 src/ → dist/ ...');
-    execSync('npm run build', { cwd: ROOT, stdio: 'inherit' });
+    execSync('npm run build', { cwd: APP_ROOT, stdio: 'inherit' });
+  } else if (!fs.existsSync(distServer)) {
+    log.error(`内核未编译且无源码可编译：${distServer}`);
+    log.info('全局安装用户请重装：npm i -g @easy-base/docs-mcp');
+    process.exit(1);
   } else {
-    log.info('dist/ 已存在且 src/ 未变，跳过编译');
+    log.info('dist/ 已存在，跳过编译（全局安装或源码未变）');
   }
 
   if (opts.coreOnly) {
@@ -51,8 +54,8 @@ export async function buildCommand(services: string[], opts: BuildOpts): Promise
   for (const svc of targets) {
     log.step(success + failed + 1, targets.length, `构建 ${svc}`);
     try {
-      execSync(`node dist/core/build-index.js ${svc}`, {
-        cwd: ROOT,
+      execSync(`node "${BUILD_INDEX_JS}" ${svc}`, {
+        cwd: APP_ROOT,
         stdio: 'inherit',
       });
       success++;

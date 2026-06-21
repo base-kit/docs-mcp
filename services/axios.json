@@ -1,9 +1,0 @@
-{
-  "name": "axios-docs",
-  "docsName": "Axios",
-  "sources": [
-    {
-      "root": "packages/axios/docs/pages"
-    }
-  ]
-}

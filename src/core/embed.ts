@@ -1,10 +1,15 @@
 import { pipeline, env } from '@huggingface/transformers';
+import fs from 'node:fs';
+import { MODELS_DIR } from './paths.js';
 
 // huggingface.co 在企业网络被封锁，走国内镜像 hf-mirror.com（模型首次下载后本地缓存，后续离线可用）
 env.remoteHost = 'https://hf-mirror.com';
 if (!process.env.HF_ENDPOINT) {
   process.env.HF_ENDPOINT = 'https://hf-mirror.com';
 }
+// 模型缓存到 DATA_ROOT/models，避免落入全局 node_modules（npm upgrade 会清空、需重下 23MB）
+fs.mkdirSync(MODELS_DIR, { recursive: true });
+env.cacheDir = MODELS_DIR;
 
 /** all-MiniLM-L6-v2 输出维度 */
 export const EMBED_DIM = 384;

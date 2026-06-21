@@ -9,11 +9,8 @@ import prompts from 'prompts';
 import { log } from '../log.js';
 import { gitClone } from '../git.js';
 import { PresetSchema } from '../../preset/schema.js';
-
-const ROOT = path.resolve(import.meta.dirname, '..', '..', '..');
-const PACKAGES_DIR = path.join(ROOT, 'packages');
-const PRESETS_DIR = path.join(ROOT, 'presets');
-const SERVICES_DIR = path.join(ROOT, 'services');
+import { getPreset } from '../../preset/loader.js';
+import { PACKAGES_DIR, SERVICES_DIR, USER_PRESETS_DIR, ensureDataRoot } from '../../core/paths.js';
 
 interface AddOpts {
   name?: string;
@@ -88,14 +85,14 @@ export async function addCommand(url: string, opts: AddOpts): Promise<void> {
     mode = answers.mode;
   }
 
-  // 3. 校验 name 不与现有预制冲突
-  if (fs.existsSync(path.join(PRESETS_DIR, `${name}.json`))) {
-    log.error(`已存在名为 "${name}" 的预制，请用不同 name 或先 remove`);
+  // 3. 校验 name 不与现有 preset（内置 + 用户）冲突
+  if (getPreset(name)) {
+    log.error(`已存在名为 "${name}" 的 preset（内置或用户区），请用不同 name 或先 remove`);
     process.exit(1);
   }
 
   // 4. 克隆
-  fs.mkdirSync(PACKAGES_DIR, { recursive: true });
+  ensureDataRoot();
   const dest = path.join(PACKAGES_DIR, name);
   log.section(`add · ${name}`);
   log.info(`克隆 ${url} → packages/${name}`);
@@ -119,9 +116,8 @@ export async function addCommand(url: string, opts: AddOpts): Promise<void> {
     meta: { addedAt: new Date().toISOString() },
   };
   const parsed = PresetSchema.parse(preset); // 校验
-  fs.mkdirSync(PRESETS_DIR, { recursive: true });
-  fs.writeFileSync(path.join(PRESETS_DIR, `${name}.json`), JSON.stringify(parsed, null, 2) + '\n');
-  log.success(`已写入 presets/${name}.json`);
+  fs.writeFileSync(path.join(USER_PRESETS_DIR, `${name}.json`), JSON.stringify(parsed, null, 2) + '\n');
+  log.success(`已写入 preset（用户区）：${name}`);
 
   // 6. 写 service config
   const cfg = {
@@ -137,7 +133,6 @@ export async function addCommand(url: string, opts: AddOpts): Promise<void> {
   };
   fs.mkdirSync(SERVICES_DIR, { recursive: true });
   fs.writeFileSync(path.join(SERVICES_DIR, `${name}.json`), JSON.stringify(cfg, null, 2) + '\n');
-  log.success(`已写入 services/${name}.json`);
 
   log.info(`下一步：docs-mcp build ${name}（构建索引）`);
 }

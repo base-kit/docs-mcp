@@ -1,7 +1,32 @@
 # docs-mcp · 开源项目的本地文档 MCP 服务集
 
 > **为 AI 编程（Claude Code / Cursor / 其他 MCP 客户端）提供可扩展的开源项目本地文档 MCP 服务。**
-> 内置 22 个常用预制（以 `npx docs-mcp preset list` 为准）；任意时刻 `docs-mcp add` 增删；任何人都能基于此 fork 出自己项目组合的版本。
+> 内置 22 个常用预制（以 `docs-mcp preset list` 为准）；任意时刻 `docs-mcp add` 增删；任何人都能基于此 fork 出自己项目组合的版本。
+
+---
+
+## ✨ 为什么需要它
+
+让 AI 写代码时查「Vite 8 的 `build.target` 默认值」「Pinia 3 的 `storeToRefs` 怎么保持响应性」「Redis 8.4 的 `SET ... IFEQ` 语法」——模型常依赖**过时的训练知识**或**联网搜索**：训练知识滞后于新版本（Vite 8 / Redis 8 / Vue 3.5 等特性缺失），网络搜索慢且结果良莠不齐。
+
+`docs-mcp` 把开源项目**官方文档**克隆到本地 → 索引成可检索的知识库 → 通过 MCP 标准协议暴露给 AI。模型按需查文档，**离线、即时、权威、可验证**。
+
+## 🎯 核心亮点
+
+- **索引后完全离线**：文档与索引在本地 `~/.docs-mcp/`，日常检索不依赖网络，不受代理 / 防火墙限制（仅首次克隆文档与启用 hybrid 下模型需联网）
+- **权威准确**：直接索引上游官方文档源码，模型拿到的是当前版本的真实 API，而非可能过时的训练记忆
+- **语义检索（hybrid）**：BM25 全文 + `all-MiniLM-L6-v2` 向量融合——`bunx` 能命中 `bun run`、模糊措辞也能找对，关键词不精准照样命中
+- **可验证**：`verify` 命令对每个服务跑 6 项 MCP 协议测试并生成 HTML 报告，搜索质量真校验（非恒真）
+- **可扩展**：22 个内置预制 + `add <url>` 一键接入任意开源项目文档；fork 出你自己的文档组合分享给团队
+- **全局安装**：`npm i -g @easy-base/docs-mcp` 即用，无需 clone 源码；数据与代码分离，`npm update -g` 升级不丢索引
+- **标准 MCP**：4 个统一工具（`search_` / `get_` / `list_` / `grep_`），Claude Code / Cursor 等任何 MCP 客户端即装即用
+
+## 👥 适合谁
+
+- 用 **Claude Code / Cursor** 等 AI 编程，常因框架 API 记不准而查文档的开发者
+- 在**内网 / 受限网络**环境，WebSearch 不可用或不稳定的团队
+- 维护**多框架项目**（Vue + Vite + Pinia + Drizzle + Redis …），想给 AI 一站式本地文档库的人
+- 想让团队共享**统一文档版本**（fork + 自定义预制 + 分发）的技术负责人
 
 ---
 
@@ -11,12 +36,17 @@
 
 在 Claude Code 中注册后，模型可通过 4 个标准工具（`search_/get_/list_/grep_`）按需检索文档 —— **不依赖网络检索、不受困于训练知识陈旧**。
 
-**对 fork 用户的承诺**：clone → `npm install` → `npx docs-mcp install --build` → `npx docs-mcp config` 四步走完，22 个开源项目的官方文档就能被 Claude 实时查询。
+**两种安装方式**：
+
+- **全局安装（推荐终端用户）**：`npm i -g @easy-base/docs-mcp` → `docs-mcp install --build` → `docs-mcp config`，无需 clone 源码
+- **clone 源码（开发 / 贡献）**：`git clone` → `npm install` → `npm link`，同上四步
+
+用户数据（克隆的文档源 + 索引 + service config）统一落在 `~/.docs-mcp/`，与代码安装位置分离——升级包不丢数据。
 
 | 维度 | 现状 |
 |---|---|
 | **预制开源项目** | 22（vue / vite / pinia / bun / drizzle / redis …）— 可随时 `add` / `remove` 增删 |
-| **CLI 命令数** | 9：`install` / `add` / `remove` / `build` / `config` / `list` / `preset` / `verify` / `update` |
+| **CLI 命令数** | 10：`install` / `add` / `remove` / `build` / `config` / `list` / `preset` / `verify` / `update` / `serve` |
 | **标准工具数（每服务）** | 4：`search_/get_/list_/grep_` |
 | **共享内核** | `src/core/`（TypeScript ESM，Orama 3.1 + 可选 `all-MiniLM-L6-v2` 向量融合） |
 | **预制清单** | `presets/*.json`（每服务一文件，diff 友好） |
@@ -26,27 +56,37 @@
 
 ## 30 秒上手
 
+### 方式 A · 全局安装（推荐，无需 clone 源码）
+
 ```bash
-# 1. clone & install（一次性）
+# 1. 全局安装
+npm i -g @easy-base/docs-mcp
+
+# 2. 拉取所有预制文档 + 构建索引（首次 10-30 分钟；redis hybrid 较慢）
+docs-mcp install --build
+
+# 3. 交互式勾选服务，生成 .mcp.json（默认 docs-mcp serve 可移植块）
+docs-mcp config
+#    或：docs-mcp config --all -o .mcp.json
+
+# 4. 在 Claude Code 中启用
+#    把生成的 .mcp.json 放到需要 AI 辅助的项目根目录（或 .claude/ 下），重启会话
+```
+
+### 方式 B · clone 源码（开发 / 贡献）
+
+```bash
 git clone https://github.com/base-kit/docs-mcp.git docs-mcp-local
 cd docs-mcp-local
 npm install
-
-# 2. 拉取所有预制 + 构建索引（首次 10-30 分钟；redis hybrid 较慢）
-npx docs-mcp install --build
-
-# 3. 交互式勾选服务，生成 .mcp.json
-npx docs-mcp config
-#    或：npx docs-mcp config --all -o .mcp.json
-
-# 4. 在 Claude Code 中启用
-#    把生成的 .mcp.json 放到需要 AI 辅助的项目根目录（或在 .claude/ 下）
-#    重启 Claude Code 会话
+npm link              # 让 docs-mcp 命令指向本地（config 默认 docs-mcp serve 块需要它在 PATH）
+docs-mcp install --build
+docs-mcp config      # 或用 npm run dev ... 直接 tsx 跑源码开发
 ```
 
 ---
 
-## 9 个命令一览
+## 10 个命令一览
 
 | 命令 | 用途 |
 |---|---|
@@ -59,6 +99,7 @@ npx docs-mcp config
 | `preset <action> [name]` | 浏览预制（`list` / `show <name>`） |
 | `verify [services...]` | 跑 MCP 协议测试 + 生成 HTML 验证报告 |
 | `update [services...]` | 拉取最新文档源码 + 重建索引（git pull + build，`--force` 重克隆 / `--verify` 验证） |
+| `serve <service>` | 运行 MCP stdio server（`.mcp.json` 注册入口，内部 spawn `dist/core/server.js`） |
 
 每个命令支持 `--help` 查看完整选项。
 
@@ -108,11 +149,20 @@ presets/<svc>.json（用户编辑 / add 命令生成）
 **运行期**：
 
 ```
-Claude Code 读 .mcp.json → spawn node dist/core/server.js <svc>
+Claude Code 读 .mcp.json → spawn `docs-mcp serve <svc>`（或 `node <root>/dist/core/server.js`）
   → loadIndex() 探测索引是否含 embedding 字段 → 选 hybrid / fulltext schema
   → 注册 4 工具（search_/get_/list_/grep_）
   → stdio JSON-RPC 接收 tool call → Orama.search() → 返回结果
 ```
+
+**双根路径（全局安装改造核心）**：
+
+| 根 | 内容 | 位置 |
+|---|---|---|
+| **代码根 `APP_ROOT`** | `dist/` `presets/`（内置）`templates/` `package.json` | 跟随包安装位置（全局 npm 目录或 clone 目录） |
+| **数据根 `DATA_ROOT`** | `packages/` `data/` `services/` `presets/`（用户 add）`models/` | `~/.docs-mcp/`（可被 `DOCS_MCP_DATA` 环境变量覆盖） |
+
+升级包（`npm update -g @easy-base/docs-mcp`）只更新 `APP_ROOT`，**绝不触碰 `DATA_ROOT`**——文档源、索引、service config、模型缓存不丢。
 
 **预设与运行期配置的双轨设计**：
 
@@ -236,19 +286,22 @@ npx docs-mcp config --root /Users/me/work/docs-mcp-local
 npx docs-mcp config --all --with-claude-md -o /path/to/your-project/.mcp.json
 ```
 
-生成的 `.mcp.json` 形如：
+生成的 `.mcp.json` 形如（默认可移植块）：
 
 ```json
 {
   "mcpServers": {
     "vite-docs": {
-      "command": "node",
-      "args": ["/Users/me/work/docs-mcp-local/dist/core/server.js", "vite"]
+      "command": "docs-mcp",
+      "args": ["serve", "vite"]
     },
     "vue-docs": { "...": "..." }
   }
 }
 ```
+
+**可移植性**：默认 `docs-mcp serve <svc>`（无绝对路径、可进 git、跨机器通用），需 `docs-mcp` 在 PATH（全局安装或 `npm link`）。
+clone 源码且未 link 时用 `--absolute` 生成 `node <安装根>/dist/core/server.js <svc>` 绝对路径块。
 
 把这个文件**放到需要 AI 辅助的项目根目录**（或 `~/.claude/`），重启 Claude Code 即可。
 
@@ -274,13 +327,15 @@ npx docs-mcp verify --output /tmp/reports      # 输出到自定义目录
 
 | 项 | 说明 |
 |---|---|
-| **首次磁盘需求** | ≈ 5 GB（22 个浅克隆仓库 + ≈ 410 MB 索引 + node_modules；每 `add` 一个服务会额外占用） |
-| **Hybrid 模型下载** | 首次启用 hybrid 需联网从 `hf-mirror.com`（不是 `huggingface.co`，公司内网）拉 `all-MiniLM-L6-v2`（约 23 MB） |
+| **首次磁盘需求** | ≈ 5 GB（22 个浅克隆仓库 + ≈ 410 MB 索引，落在 `~/.docs-mcp/`；每 `add` 一个服务额外占用） |
+| **数据位置** | 所有用户数据在 `~/.docs-mcp/`（`DOCS_MCP_DATA` 可覆盖），与包安装位置分离，升级不丢 |
+| **Hybrid 模型下载** | 首次启用 hybrid 需联网从 `hf-mirror.com`（不是 `huggingface.co`，公司内网）拉 `all-MiniLM-L6-v2`（约 23 MB，缓存在 `~/.docs-mcp/models/`） |
 | **redis hybrid 内存** | 运行期约 1.5 GB |
 | **Claude Code 启动** | 所有 stdio server 同时 spawn 约需 8-12 秒（与服务数成正比） |
 | **平台** | macOS / Linux 验证；Windows 需 Git Bash 或 WSL |
-| **文档陈旧检测** | `data/<svc>/manifest.json` 含 `gitCommit` 但本仓库不自动 rebuild。订阅 release：每月 `npx docs-mcp update <svc>`（git pull + 重建索引） |
-| **`.mcp.json` 不进 git** | 含绝对路径，已 gitignored；clone 后需 `npx docs-mcp config` 重新生成 |
+| **文档陈旧检测** | `data/<svc>/manifest.json` 含 `gitCommit` + 文件签名，启动时自动比对并提示过期。订阅 release：`docs-mcp update <svc>`（git pull + 重建索引） |
+| **升级工具** | `npm update -g @easy-base/docs-mcp`（只更新代码，不碰 `~/.docs-mcp/`） |
+| **`.mcp.json` 可移植性** | 默认 `docs-mcp serve` 块无绝对路径、可进 git；`--absolute` 块含路径，跨机器需重新生成 |
 
 ---
 

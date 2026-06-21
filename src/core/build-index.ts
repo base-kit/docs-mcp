@@ -1,13 +1,14 @@
 import { save } from '@orama/orama';
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildIndex, buildOramaDB, resolveRoot } from './indexer.js';
+import { buildIndex, buildOramaDB } from './indexer.js';
 import { loadServiceConfig, listServices } from './config.js';
 import { buildManifest } from './manifest.js';
+import { DATA_DIR } from './paths.js';
 
 /** 索引输出目录：data/<service>/ */
 function dataDir(service: string): string {
-  return resolveRoot(`data/${service}`);
+  return path.join(DATA_DIR, service);
 }
 
 async function main() {

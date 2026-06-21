@@ -1,9 +1,13 @@
-# ===== 依赖（npm install 产物）=====
+# ===== 依赖（pnpm 项目；node_modules 与 npm lock 不入 git）=====
 /node_modules/
+/package-lock.json
 
-# ===== 数据源 packages/（git clone 时填充） + 索引 data/ + 构建产物 dist/ =====
+# ===== 用户数据（packages 克隆源 + data 索引 + services service config + report 验证产物）=====
+# 全局安装后落在 ~/.docs-mcp/；仓库内仅作开发期样本，不入 git（install 时从 preset 重建）
 /packages/
 /data/
+/services/
+/report/
 /dist/
 
 # ===== 用户本地的 .mcp.json（消费方产物，含绝对路径，docs-mcp config 可重建）=====

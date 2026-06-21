@@ -1,9 +1,0 @@
-{
-  "name": "pnpm-docs",
-  "docsName": "pnpm",
-  "sources": [
-    {
-      "root": "packages/pnpm.io/docs"
-    }
-  ]
-}

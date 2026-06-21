@@ -8,10 +8,7 @@ import { getPreset, listPresetNames } from '../../preset/loader.js';
 import { presetToServiceConfig } from '../../preset/schema.js';
 import { gitClone, isGitRepo } from '../git.js';
 import { log, table } from '../log.js';
-
-const ROOT = process.cwd();
-const PACKAGES_DIR = path.join(ROOT, 'packages');
-const SERVICES_DIR = path.join(ROOT, 'services');
+import { PACKAGES_DIR, SERVICES_DIR, BUILD_INDEX_JS, APP_ROOT, ensureDataRoot } from '../../core/paths.js';
 
 interface InstallOpts {
   build?: boolean;
@@ -27,8 +24,7 @@ export async function installCommand(services: string[], opts: InstallOpts): Pro
     process.exit(1);
   }
 
-  fs.mkdirSync(PACKAGES_DIR, { recursive: true });
-  fs.mkdirSync(SERVICES_DIR, { recursive: true });
+  ensureDataRoot();
 
   log.section(`install · ${targets.length} 个服务`);
   const results: Array<[string, string, string]> = [];
@@ -91,8 +87,8 @@ export async function installCommand(services: string[], opts: InstallOpts): Pro
   if (opts.build) {
     log.section('build · 重建索引');
     try {
-      execSync('node dist/core/build-index.js ' + targets.join(' '), {
-        cwd: ROOT,
+      execSync(`node "${BUILD_INDEX_JS}" ${targets.join(' ')}`, {
+        cwd: APP_ROOT,
         stdio: 'inherit',
       });
     } catch {

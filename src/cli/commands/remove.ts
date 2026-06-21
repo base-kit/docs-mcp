@@ -5,8 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import prompts from 'prompts';
 import { log } from '../log.js';
-
-const ROOT = path.resolve(import.meta.dirname, '..', '..', '..');
+import { PACKAGES_DIR, SERVICES_DIR, DATA_DIR, USER_PRESETS_DIR, DATA_ROOT } from '../../core/paths.js';
 
 interface RemoveOpts {
   keepData?: boolean;
@@ -15,10 +14,10 @@ interface RemoveOpts {
 
 export async function removeCommand(service: string, opts: RemoveOpts): Promise<void> {
   const targets = [
-    { label: 'packages 源码', path: path.join(ROOT, 'packages', service), enabled: !opts.keepSource },
-    { label: 'service config', path: path.join(ROOT, 'services', `${service}.json`), enabled: true },
-    { label: 'preset 元数据', path: path.join(ROOT, 'presets', `${service}.json`), enabled: true },
-    { label: '索引数据', path: path.join(ROOT, 'data', service), enabled: !opts.keepData },
+    { label: 'packages 源码', path: path.join(PACKAGES_DIR, service), enabled: !opts.keepSource },
+    { label: 'service config', path: path.join(SERVICES_DIR, `${service}.json`), enabled: true },
+    { label: 'preset 元数据（用户区）', path: path.join(USER_PRESETS_DIR, `${service}.json`), enabled: true },
+    { label: '索引数据', path: path.join(DATA_DIR, service), enabled: !opts.keepData },
   ].filter((t) => t.enabled && fs.existsSync(t.path));
 
   if (targets.length === 0) {
@@ -28,7 +27,7 @@ export async function removeCommand(service: string, opts: RemoveOpts): Promise<
 
   log.section(`remove · ${service}`);
   for (const t of targets) {
-    log.info(`将删除 ${t.label}: ${path.relative(ROOT, t.path)}`);
+    log.info(`将删除 ${t.label}: ${path.relative(DATA_ROOT, t.path)}`);
   }
 
   const { confirm } = await prompts({
@@ -44,6 +43,6 @@ export async function removeCommand(service: string, opts: RemoveOpts): Promise<
 
   for (const t of targets) {
     fs.rmSync(t.path, { recursive: true, force: true });
-    log.success(`已删除 ${path.relative(ROOT, t.path)}`);
+    log.success(`已删除 ${path.relative(DATA_ROOT, t.path)}`);
   }
 }

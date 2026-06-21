@@ -2,10 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { create, insert, MODE_HYBRID_SEARCH, type AnyOrama } from '@orama/orama';
 import { embedBatch, EMBED_DIM } from './embed.js';
+import { DATA_ROOT } from './paths.js';
 import type { DocChunk, DocPage, ServiceConfig, DocSource } from './types.js';
-
-/** 项目根目录（dist/core/ → 上一级 dist/ → 再上一级项目根） */
-const CORE_ROOT = path.resolve(import.meta.dirname, '..', '..');
 
 // ---------------------------------------------------------------------------
 // 文本处理工具（与原各服务实现逐字一致，已验证）
@@ -217,9 +215,9 @@ export function collectReadmeFiles(root: string, exclude: string[]): Array<{ abs
 // 构建索引
 // ---------------------------------------------------------------------------
 
-/** 解析配置中的相对路径为绝对路径（基准项目根） */
+/** 解析配置中的相对路径为绝对路径（基准 DATA_ROOT：packages/<pkg>/... 与 data/...） */
 export function resolveRoot(rel: string): string {
-  return path.resolve(CORE_ROOT, rel);
+  return path.resolve(DATA_ROOT, rel);
 }
 
 /** 处理单个文档源，返回其产生的 chunks 与 pages */
