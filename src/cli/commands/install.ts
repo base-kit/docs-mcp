@@ -85,16 +85,23 @@ export async function installCommand(services: string[], opts: InstallOpts): Pro
   table(['服务', '目录', '结果'], results);
 
   if (opts.build) {
-    log.section('build · 重建索引');
-    try {
-      execSync(`node "${BUILD_INDEX_JS}" ${targets.join(' ')}`, {
-        cwd: APP_ROOT,
-        stdio: 'inherit',
-      });
-    } catch {
-      log.error('索引构建失败');
-      process.exit(1);
+    log.section(`build · 重建索引（${targets.length} 个）`);
+    let built = 0;
+    let failed = 0;
+    for (const svc of targets) {
+      log.step(built + failed + 1, targets.length, `构建 ${svc}`);
+      try {
+        execSync(`node "${BUILD_INDEX_JS}" ${svc}`, {
+          cwd: APP_ROOT,
+          stdio: 'inherit',
+        });
+        built++;
+      } catch {
+        log.error(`  ✗ ${svc} 构建失败`);
+        failed++;
+      }
     }
+    log.success(`索引构建：${built} 成功${failed ? `, ${failed} 失败` : ''}`);
   }
 
   log.success(`完成：${successCount}/${targets.length} 成功`);
