@@ -1,24 +1,39 @@
-import { pipeline, env } from '@huggingface/transformers';
 import fs from 'node:fs';
 import { MODELS_DIR } from './paths.js';
 
-// huggingface.co 在企业网络被封锁，走国内镜像 hf-mirror.com（模型首次下载后本地缓存，后续离线可用）
-env.remoteHost = 'https://hf-mirror.com';
-if (!process.env.HF_ENDPOINT) {
-  process.env.HF_ENDPOINT = 'https://hf-mirror.com';
-}
-// 模型缓存到 DATA_ROOT/models，避免落入全局 node_modules（npm upgrade 会清空、需重下 23MB）
-fs.mkdirSync(MODELS_DIR, { recursive: true });
-env.cacheDir = MODELS_DIR;
-
-/** all-MiniLM-L6-v2 输出维度 */
+/** all-MiniLM-L6-v2 输出维度（hybrid 索引的 embedding 字段长度） */
 export const EMBED_DIM = 384;
 
 let extractor: any = null;
+let transformersPromise: Promise<{ pipeline: any; env: any }> | null = null;
+
+/**
+ * 延迟加载 @huggingface/transformers（及其依赖 onnxruntime-node）。
+ * 仅 hybrid build 真正调 embedBatch 时才触发——fulltext build 与运行期 server load
+ * 都不加载 onnxruntime，消除 "Unknown CPU vendor" warning、加速构建、避免某些环境 init 卡顿。
+ */
+async function loadTransformers(): Promise<{ pipeline: any; env: any }> {
+  if (!transformersPromise) {
+    transformersPromise = import('@huggingface/transformers').then((mod) => {
+      const { pipeline, env } = mod;
+      // huggingface.co 在企业网络被封锁，走国内镜像 hf-mirror.com（模型首次下载后本地缓存，后续离线可用）
+      env.remoteHost = 'https://hf-mirror.com';
+      if (!process.env.HF_ENDPOINT) {
+        process.env.HF_ENDPOINT = 'https://hf-mirror.com';
+      }
+      // 模型缓存到 DATA_ROOT/models，避免落入全局 node_modules（npm upgrade 会清空、需重下 23MB）
+      fs.mkdirSync(MODELS_DIR, { recursive: true });
+      env.cacheDir = MODELS_DIR;
+      return { pipeline, env };
+    });
+  }
+  return transformersPromise;
+}
 
 /** 单例加载 feature-extraction pipeline（首次加载模型约数秒，之后走缓存） */
 async function getExtractor() {
   if (!extractor) {
+    const { pipeline } = await loadTransformers();
     extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
   }
   return extractor;

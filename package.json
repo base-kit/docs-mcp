@@ -1,6 +1,6 @@
 {
   "name": "@easy-base/docs-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "为 AI 编程（Claude Code / Cursor 等）提供开源项目的本地、可检索、可验证的官方文档 MCP 服务",
   "type": "module",
   "repository": {
